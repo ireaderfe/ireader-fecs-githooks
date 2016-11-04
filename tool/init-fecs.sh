@@ -1,10 +1,7 @@
 #!/bin/sh
-
+cd ..
 git clone https://github.com/ireaderfe/ireader-fecs-githooks.git
 echo "拷贝文件...."
-
-# git config --global init.templatedir '~/.git_template'
-# \cp -f hooks/pre-commit ~/.git_template/hooks/
 
 root=$(cd `dirname $0`; pwd)
 gitPath=$root"/.git/"
@@ -14,11 +11,11 @@ if [ ! -d "$gitPath" ]; then
 else
     cd fecs-git-hooks
     cp -f hooks/pre-commit ../.git/hooks/
+    cp -f .fecsrc ../
     cd ..
-
-    echo "###################################################"
-    echo "#                  初始化完成                       #"
-    echo "###################################################"
+    echo "pre-commit更新完成"
+    echo ".fecsrc配置文件更新完成"
+    
 fi
 
 rm -rf ireader-fecs-githooks
