@@ -75,18 +75,22 @@ exec('npm root -g', function (error, result, stderr) {
         console.log('******提交的文件列表******\n');
         console.log(result);
 
+        console.log('需要检查的文件列表');
+
         stagedFiles = stagedFiles || result.trim().split('\n');
 
         exitWhenEmpty(stagedFiles);
 
-        // 去掉删除的（不存在）文件，检测是否存在文件
+        // 去掉删除的(不存在)文件,检测是否存在文件
+        // filter()方法使用指定的函数测试所有元素,并创建一个包含所有通过测试的元素的新数组,返回true表示保留该元素(通过测试),false则不保留。
+        // __dirname 表示当前执行脚本所在的目录
+        // fs.existsSync(path, callback)同步版的检测给定的路径是否存在
+        // path.resolve([from ...], to),将to参数解析为绝对路径
         stagedFiles = stagedFiles.filter(function (file) {
-        //__dirname 表示当前执行脚本所在的目录。
             var filePath = path.resolve(__dirname, '../../', file);
-            //fs.existsSync(path, callback)同步版的检测给定的路径是否存在。
             return fs.existsSync(filePath);
         });
-
+        // 忽略文件
         stagedFiles = ignore(stagedFiles);
         exitWhenEmpty(stagedFiles);
 
@@ -100,10 +104,10 @@ exec('npm root -g', function (error, result, stderr) {
     });
 });
 
+// 文件为空时退出
 function exitWhenEmpty(files) {
     if (!files || files.length === 0) {
-        console.log('******没有文件需要被检测******');
-        // exit([code])使用指定的code结束进程，如果忽略将会使用code 0。
+        console.log('Note:没有文件需要被检测');
         process.exit(0);
     }
 }
@@ -121,9 +125,10 @@ function ignore(files) {
         return line !== '' && line[0] !== '#';
     }
     var ignoreFilePath = path.resolve(__dirname, '../../' + IGNORE_FILENAME);
-
+    // fs.readFileSync(filename[, options])同步读取文件内容
     try {
         patterns = fs.readFileSync(ignoreFilePath, 'utf8').split(/\r?\n/).filter(valid);
+
         files = files.filter(function (filePath) {
             var result = false;
             patterns.forEach(function (pattern) {
@@ -138,7 +143,8 @@ function ignore(files) {
         });
     }
     catch (e) {
-        // 没有.fecsignore
+        console.log(e);
+        process.exit(1);
     }
     console.log('');
     return files;
