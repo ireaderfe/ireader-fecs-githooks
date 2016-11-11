@@ -133,6 +133,8 @@ function ignore(files) {
             var result = false;
             patterns.forEach(function (pattern) {
                 var matches = minimatch(filePath, pattern) || minimatch(filePath, pattern + '/**');
+                console.log(pattern);
+                console.log(matches);
                 if (matches) {
                     result = true;
                     console.log('%s is ignored by %s.', filePath, '.fecsignore');
