@@ -1,4 +1,4 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
 
 /**
  * @file git pre-commit hook Git代码提交之前对文件进行检查并修复
@@ -72,7 +72,7 @@ exec('npm root -g', function (error, result, stderr) {
             process.exit(1);
         }
 
-        console.log('******提交的文件列表******\n');
+        console.log('Note:提交的文件列表\n');
         console.log(result);
 
         stagedFiles = stagedFiles || result.trim().split('\n');
@@ -166,7 +166,7 @@ function fecsCheckError(files) {
         success = success && json.length === 0;
         var isZero = success;
         if(!success) {
-            console.log('******[强制] 必须修复******\n\n');
+            console.log('Note:[强制] 必须修复\n');
             fecsCheckWarn(files, isZero);
         }else {
             fecsCheckWarn(files, isZero);
@@ -196,7 +196,7 @@ function fecsCheckWarn(files, isZero) {
     var done = function (success, json) {
         success = success && json.length === 0;
         if(!success) {
-            console.log('******[建议] 建议修复******\n');
+            console.log('Note:[建议] 建议修复\n');
         }
         // TODO:warn的代码是否自动修复
         if(!isZero) {
@@ -232,11 +232,11 @@ function fecsFormat(files) {
         _: files
     };
     var done = function() {
-        console.log('\n******机械修复完成******\n');
+        console.log('\nNote:机械修复完成\n');
         var filelist = files.join(' ');
         // 机械修复后清空暂存区，防止再次commit提交不规范代码的暂存区代码
         exec('git reset HEAD'+' '+filelist, function(error, result, stderr){
-            console.log('******暂存区清除完成，请重新添加和提交******');
+            console.log('Note:暂存区清除完成，请重新添加和提交');
             console.timeEnd(name);
             // 阻止提交
             process.exit(1);
